@@ -1,0 +1,1027 @@
+<title>Nayatel Quote Builder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f2f5f8;
+    --surface:#ffffff;
+    --surface-2:#eaeff5;
+    --border:#d7e0ea;
+    --text:#152238;
+    --text-muted:#5c6c82;
+    --accent:#155ea8;
+    --accent-strong:#0d3f75;
+    --accent-soft:#e6f0fb;
+    --success:#1c7a52;
+    --success-soft:#e5f6ee;
+    --danger:#b3372c;
+    --danger-soft:#fbeae8;
+    --mono-bg:#f6f8fb;
+    --shadow: 0 1px 2px rgba(21,34,56,.06), 0 8px 24px -12px rgba(21,34,56,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1620;
+      --surface:#141e2b;
+      --surface-2:#1a2636;
+      --border:#2b3a4d;
+      --text:#e8eef6;
+      --text-muted:#93a5bc;
+      --accent:#5b9fe0;
+      --accent-strong:#8cc0ee;
+      --accent-soft:#1a3452;
+      --success:#57bf8d;
+      --success-soft:#123526;
+      --danger:#e58a7d;
+      --danger-soft:#3a1e1c;
+      --mono-bg:#101a26;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1620;
+    --surface:#141e2b;
+    --surface-2:#1a2636;
+    --border:#2b3a4d;
+    --text:#e8eef6;
+    --text-muted:#93a5bc;
+    --accent:#5b9fe0;
+    --accent-strong:#8cc0ee;
+    --accent-soft:#1a3452;
+    --success:#57bf8d;
+    --success-soft:#123526;
+    --danger:#e58a7d;
+    --danger-soft:#3a1e1c;
+    --mono-bg:#101a26;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    line-height:1.45;
+  }
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:32px 20px 64px;
+  }
+  header.page{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  .titleblock h1{
+    font-family:"Barlow Condensed", "Segoe UI", sans-serif;
+    font-weight:700;
+    font-size:2.4rem;
+    letter-spacing:.01em;
+    margin:0 0 4px;
+    text-wrap:balance;
+    color:var(--text);
+  }
+  .titleblock p{
+    margin:0;
+    color:var(--text-muted);
+    font-size:.92rem;
+    max-width:56ch;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--accent-soft);
+    color:var(--accent-strong);
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:.78rem;
+    font-weight:600;
+    letter-spacing:.03em;
+    white-space:nowrap;
+  }
+  .badge svg{width:14px;height:14px;flex:none;}
+
+  section.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:22px 24px;
+    margin-bottom:24px;
+  }
+  .card h2{
+    font-family:"Barlow Condensed", sans-serif;
+    font-weight:600;
+    font-size:1.3rem;
+    margin:0 0 4px;
+    letter-spacing:.01em;
+  }
+  .card .hint{
+    margin:0 0 18px;
+    color:var(--text-muted);
+    font-size:.85rem;
+  }
+
+  .add-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 1.6fr .55fr auto;
+    gap:14px;
+    align-items:end;
+  }
+  @media (max-width: 760px){
+    .add-grid{grid-template-columns: 1fr 1fr; }
+    .add-grid .add-btn{grid-column: 1 / -1;}
+  }
+  label{
+    display:block;
+    font-size:.72rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--text-muted);
+    margin-bottom:6px;
+  }
+  select, input[type="number"]{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:.92rem;
+    font-family:inherit;
+    appearance:none;
+  }
+  select:focus, input:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+  .qty-wrap{position:relative;}
+  .qty-wrap .unit-suffix{
+    position:absolute;
+    right:12px; top:50%; transform:translateY(-50%);
+    font-size:.72rem; color:var(--text-muted);
+    pointer-events:none;
+  }
+  .price-preview{
+    font-size:.8rem;
+    color:var(--text-muted);
+    margin-top:6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .price-preview strong{ color:var(--accent-strong); font-family:"IBM Plex Mono", monospace; }
+
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size:.9rem;
+    padding:10px 20px;
+    border-radius:8px;
+    white-space:nowrap;
+    transition:background .15s ease;
+  }
+  .btn-primary:hover{background:var(--accent-strong);}
+  .btn-primary:disabled{opacity:.45; cursor:not-allowed;}
+
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:.82rem;
+    padding:8px 14px;
+    border-radius:8px;
+  }
+  .btn-ghost:hover{ color:var(--text); border-color: var(--text-muted); }
+
+  .table-scroll{ overflow-x:auto; border:1px solid var(--border); border-radius:10px; }
+  table{ width:100%; border-collapse:collapse; font-size:.88rem; min-width:640px; }
+  thead th{
+    text-align:left;
+    background:var(--surface-2);
+    color:var(--text-muted);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-weight:600;
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:middle;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--surface-2); }
+  td.num, th.num{ text-align:right; font-variant-numeric: tabular-nums; font-family:"IBM Plex Mono", monospace; }
+  td.cat-cell{ color:var(--text-muted); font-size:.8rem; }
+  .item-qty{
+    width:76px;
+    padding:6px 8px;
+    text-align:right;
+    font-family:"IBM Plex Mono", monospace;
+  }
+  .remove-btn{
+    background:var(--danger-soft);
+    color:var(--danger);
+    border-radius:6px;
+    width:26px; height:26px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:1rem;
+    line-height:1;
+  }
+  .remove-btn:hover{ filter:brightness(.9); }
+
+  .empty-state{
+    text-align:center;
+    padding:36px 20px;
+    color:var(--text-muted);
+    font-size:.9rem;
+  }
+  .empty-state svg{ width:34px; height:34px; margin-bottom:10px; opacity:.5; }
+
+  .summary-bar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-top:18px;
+    padding-top:18px;
+    border-top:1px dashed var(--border);
+  }
+  .summary-stats{ display:flex; gap:28px; flex-wrap:wrap; }
+  .stat .stat-label{
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--text-muted); margin-bottom:2px;
+  }
+  .stat .stat-value{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:1.15rem;
+    font-weight:600;
+  }
+  .stat.total .stat-value{
+    font-size:1.6rem;
+    color:var(--success);
+  }
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  .toast{
+    position:fixed;
+    bottom:20px; left:50%; transform:translateX(-50%) translateY(12px);
+    background:var(--text);
+    color:var(--bg);
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:.85rem;
+    font-weight:500;
+    box-shadow:var(--shadow);
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+  .toast.err{ background:var(--danger); color:#fff; }
+
+  footer.page{
+    text-align:center;
+    color:var(--text-muted);
+    font-size:.76rem;
+    margin-top:8px;
+  }
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <div class="titleblock">
+      <h1>Nayatel Quote Builder</h1>
+      <p>Add hardware and consumable items from the Nayatel tariff, adjust quantities, and export a styled Excel quotation with category subtotals and a spend chart.</p>
+    </div>
+    <span class="badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Tariff dated 28 Apr 2026 &middot; Prices in PKR, incl. 18% GST
+    </span>
+  </header>
+
+  <section class="card">
+    <h2>Add equipment</h2>
+    <p class="hint">Choose a category to narrow the list, pick an item, set a quantity, then add it to your quote.</p>
+    <div class="add-grid">
+      <div>
+        <label for="catSelect">Category</label>
+        <select id="catSelect"></select>
+      </div>
+      <div>
+        <label for="itemSelect">Equipment / item</label>
+        <select id="itemSelect"></select>
+      </div>
+      <div>
+        <label for="qtyInput">Quantity</label>
+        <div class="qty-wrap">
+          <input type="number" id="qtyInput" min="0.01" step="any" value="1">
+          <span class="unit-suffix" id="qtyUnitLabel">unit</span>
+        </div>
+      </div>
+      <button class="btn-primary add-btn" id="addBtn">Add to quote</button>
+    </div>
+    <p class="price-preview" id="pricePreview"></p>
+  </section>
+
+  <section class="card">
+    <h2>Quote</h2>
+    <p class="hint">Edit quantities directly in the table. The Excel export groups items by category with subtotals, a colour key, and a spend chart.</p>
+
+    <div id="tableWrap" class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Category</th>
+            <th class="num">Unit price</th>
+            <th class="num">Qty</th>
+            <th class="num">Line total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="quoteBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <div>No equipment added yet &mdash; use the form above to start your quote.</div>
+    </div>
+
+    <div class="summary-bar">
+      <div class="summary-stats">
+        <div class="stat">
+          <div class="stat-label">Line items</div>
+          <div class="stat-value" id="statItems">0</div>
+        </div>
+        <div class="stat total">
+          <div class="stat-label">Grand total (PKR)</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-ghost" id="clearBtn">Clear all</button>
+        <button class="btn-primary" id="exportBtn" disabled>Export Excel</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page">Built from the Nayatel internal &amp; external tariff (Inventory &amp; Consumable Items), April 28, 2026. Verify current pricing with Nayatel before quoting customers.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ---- Catalog data, extracted from the Nayatel tariff PDF (28 Apr 2026) ----
+  var CATALOG = [
+    // Network Equipment
+    { cat:"Network Equipment", name:"ONT (Huawei) with RF", unit:"unit", price:15000 },
+    { cat:"Network Equipment", name:"ONT (Huawei) Without RF", unit:"unit", price:12000 },
+    { cat:"Network Equipment", name:"Home Router", unit:"unit", price:8000 },
+    { cat:"Network Equipment", name:"Business Class Router", unit:"unit", price:19000 },
+    { cat:"Network Equipment", name:"Amplifier", unit:"unit", price:26000 },
+    { cat:"Network Equipment", name:"8 Port Switch", unit:"unit", price:6900 },
+    { cat:"Network Equipment", name:"8 Port POE Switch", unit:"unit", price:10000 },
+    { cat:"Network Equipment", name:"4 Port POE Switch", unit:"unit", price:7000 },
+    { cat:"Network Equipment", name:"Mikrotik Router (RB750 Gr3)", unit:"unit", price:21000 },
+    { cat:"Network Equipment", name:"Huawei Access Point (Edge ONT)", unit:"unit", price:16000 },
+    { cat:"Network Equipment", name:"IP-Mux 1 Port", unit:"unit", price:250000 },
+    { cat:"Network Equipment", name:"IP-Mux 2 Port", unit:"unit", price:300000 },
+    { cat:"Network Equipment", name:"IP-Mux 4 Port", unit:"unit", price:410000 },
+    { cat:"Network Equipment", name:"2 Port ATA Device", unit:"unit", price:15500 },
+    { cat:"Network Equipment", name:"8 Port ATA Device", unit:"unit", price:57000 },
+
+    // Entertainment & Set-Top Boxes
+    { cat:"Entertainment & Set-Top Boxes", name:"ATV Box", unit:"unit", price:19000 },
+    { cat:"Entertainment & Set-Top Boxes", name:"Android Joy Box", unit:"unit", price:15990 },
+    { cat:"Entertainment & Set-Top Boxes", name:"Digital Set Top Box", unit:"unit", price:6500 },
+    { cat:"Entertainment & Set-Top Boxes", name:"HD Box / Joy Box Remote", unit:"unit", price:1250 },
+    { cat:"Entertainment & Set-Top Boxes", name:"HD Box / Joy Box Adapter", unit:"unit", price:850 },
+    { cat:"Entertainment & Set-Top Boxes", name:"Remote (STB)", unit:"unit", price:900 },
+    { cat:"Entertainment & Set-Top Boxes", name:"Remote for ATV Box", unit:"unit", price:2000 },
+    { cat:"Entertainment & Set-Top Boxes", name:"Remote Mouse", unit:"unit", price:3500 },
+
+    // Power & Adapters
+    { cat:"Power & Adapters", name:"Huawei UPS Batteries Unit", unit:"unit", price:3500 },
+    { cat:"Power & Adapters", name:"Adapter (Router, VONT, Sky Media STB)", unit:"unit", price:700 },
+    { cat:"Power & Adapters", name:"Adapter (STB)", unit:"unit", price:900 },
+    { cat:"Power & Adapters", name:"ONT Adapter", unit:"unit", price:900 },
+    { cat:"Power & Adapters", name:"Huawei UPS Adapter", unit:"unit", price:4400 },
+    { cat:"Power & Adapters", name:"ATA Adapter", unit:"unit", price:1500 },
+    { cat:"Power & Adapters", name:"UPS Power Cable", unit:"unit", price:270 },
+    { cat:"Power & Adapters", name:"9V DC Converter", unit:"unit", price:270 },
+    { cat:"Power & Adapters", name:"5V DC Convertor", unit:"unit", price:270 },
+    { cat:"Power & Adapters", name:"Power Extension with Wire", unit:"unit", price:807 },
+    { cat:"Power & Adapters", name:"Power Extension without Wire", unit:"unit", price:504 },
+    { cat:"Power & Adapters", name:"HDMI Cable (1.5 Meter)", unit:"unit", price:300 },
+
+    // Cameras & Surveillance
+    { cat:"Cameras & Surveillance", name:"IP Camera for N-Watch", unit:"unit", price:9950 },
+    { cat:"Cameras & Surveillance", name:"Camera Audio 4MP Bullet / 4MP Turret", unit:"unit", price:16500 },
+    { cat:"Cameras & Surveillance", name:"Camera Audio 2MP Bullet / 2MP Turret", unit:"unit", price:12000 },
+
+    // Fiber & Cable
+    { cat:"Fiber & Cable", name:"02 Fiber (per Feet)", unit:"ft", price:35 },
+    { cat:"Fiber & Cable", name:"08 Fiber (per Feet)", unit:"ft", price:59 },
+    { cat:"Fiber & Cable", name:"08 Fiber ADSS (per Feet)", unit:"ft", price:89 },
+    { cat:"Fiber & Cable", name:"12 Fiber (per Feet)", unit:"ft", price:83 },
+    { cat:"Fiber & Cable", name:"NTL UTP CAT5 2 Pair Cable", unit:"ft", price:29 },
+    { cat:"Fiber & Cable", name:"NTL UTP CAT5 1 Pair Cable", unit:"ft", price:11.8 },
+    { cat:"Fiber & Cable", name:"NTL UTP Cat 6 Cable", unit:"ft", price:63 },
+    { cat:"Fiber & Cable", name:"RG 6 Coaxial Cable", unit:"ft", price:44 },
+    { cat:"Fiber & Cable", name:"RG 11 Coaxial Cable", unit:"ft", price:46 },
+    { cat:"Fiber & Cable", name:"Outdoor Ethernet Cable", unit:"ft", price:82 },
+    { cat:"Fiber & Cable", name:"Patch Cords for Customer", unit:"unit", price:1008.9 },
+
+    // Pipes & Ducts
+    { cat:"Pipes & Ducts", name:"PVC Pipe 1\"", unit:"ft", price:37 },
+    { cat:"Pipes & Ducts", name:"PVC Pipe 3/4\"", unit:"ft", price:30 },
+    { cat:"Pipes & Ducts", name:"PVC Flexible Pipe 1.25\"", unit:"ft", price:21 },
+    { cat:"Pipes & Ducts", name:"PVC Flexible Pipe 0.5\"", unit:"ft", price:17 },
+    { cat:"Pipes & Ducts", name:"Steel Flexible Pipe 1.25\"", unit:"ft", price:70 },
+    { cat:"Pipes & Ducts", name:"Steel Flexible Pipe 0.5\"", unit:"ft", price:55 },
+    { cat:"Pipes & Ducts", name:"Dura Duct (16x16 mm)", unit:"ft", price:35 },
+    { cat:"Pipes & Ducts", name:"Dura Duct (16x25 mm)", unit:"ft", price:42 },
+    { cat:"Pipes & Ducts", name:"Dura Duct (25x25 mm)", unit:"ft", price:68.44 },
+    { cat:"Pipes & Ducts", name:"Dura Duct (40x40 mm)", unit:"ft", price:115 },
+    { cat:"Pipes & Ducts", name:"GI Pipe 1\"", unit:"ft", price:460 },
+    { cat:"Pipes & Ducts", name:"GI Pipe 2\"", unit:"ft", price:800 },
+
+    // Connectors & Splitters
+    { cat:"Connectors & Splitters", name:"RJ 45 Connector (w/installation)", unit:"unit", price:32 },
+    { cat:"Connectors & Splitters", name:"RJ 11 Connector (w/installation)", unit:"unit", price:27 },
+    { cat:"Connectors & Splitters", name:"1:2 RF Splitter (w/installation)", unit:"unit", price:330 },
+    { cat:"Connectors & Splitters", name:"1:3 RF Splitter (w/installation)", unit:"unit", price:370 },
+    { cat:"Connectors & Splitters", name:"1:4 RF Splitter (w/installation)", unit:"unit", price:440 },
+    { cat:"Connectors & Splitters", name:"1:6 RF Splitter (w/installation)", unit:"unit", price:1030 },
+    { cat:"Connectors & Splitters", name:"IEC/RF Connector (w/installation)", unit:"unit", price:160 },
+    { cat:"Connectors & Splitters", name:"RG-11 Compression Connectors", unit:"unit", price:190 },
+    { cat:"Connectors & Splitters", name:"RF Jointer (w/installation)", unit:"unit", price:140 },
+    { cat:"Connectors & Splitters", name:"F Connectors Cold Press (w/installation)", unit:"unit", price:120 },
+    { cat:"Connectors & Splitters", name:"RF Attenuator (w/installation)", unit:"unit", price:435 },
+    { cat:"Connectors & Splitters", name:"IEC Male-Female Right Angled Connector (90°)", unit:"unit", price:455 },
+    { cat:"Connectors & Splitters", name:"Ethernet Jointer", unit:"unit", price:135 },
+    { cat:"Connectors & Splitters", name:"RG7 F-Connector", unit:"unit", price:40 },
+
+    // Enclosures & Fittings
+    { cat:"Enclosures & Fittings", name:"Mini Closure (1 input / 1 output)", unit:"unit", price:1300 },
+    { cat:"Enclosures & Fittings", name:"Mini Closure (1 input / 2 outputs)", unit:"unit", price:1400 },
+    { cat:"Enclosures & Fittings", name:"Phone Rosette (w/installation)", unit:"unit", price:125 },
+    { cat:"Enclosures & Fittings", name:"ODF (NTL w/splice tray, w/inst, wo/splicing)", unit:"unit", price:6500 },
+    { cat:"Enclosures & Fittings", name:"Mini ODF", unit:"unit", price:1814.84 }
+  ];
+  CATALOG.forEach(function(it, i){ it.id = i; });
+
+  var CATEGORIES = [];
+  CATALOG.forEach(function(it){ if (CATEGORIES.indexOf(it.cat) === -1) CATEGORIES.push(it.cat); });
+
+  // Fixed categorical hues (validated palette, adjacent-pair CVD-safe order).
+  // One slot per category, assigned by identity — never re-ordered by value.
+  var CATEGORY_COLORS = {};
+  (function(){
+    var slots = ["2A78D6", "EB6834", "1BAF7A", "EDA100", "E87BA4", "008300", "4A3AA7", "E34948"];
+    CATEGORIES.forEach(function(c, i){ CATEGORY_COLORS[c] = slots[i % slots.length]; });
+  })();
+
+  var quote = []; // { id, name, cat, unit, price, qty }
+
+  var catSelect = document.getElementById("catSelect");
+  var itemSelect = document.getElementById("itemSelect");
+  var qtyInput = document.getElementById("qtyInput");
+  var qtyUnitLabel = document.getElementById("qtyUnitLabel");
+  var pricePreview = document.getElementById("pricePreview");
+  var addBtn = document.getElementById("addBtn");
+  var quoteBody = document.getElementById("quoteBody");
+  var tableWrap = document.getElementById("tableWrap");
+  var emptyState = document.getElementById("emptyState");
+  var statItems = document.getElementById("statItems");
+  var statTotal = document.getElementById("statTotal");
+  var clearBtn = document.getElementById("clearBtn");
+  var exportBtn = document.getElementById("exportBtn");
+  var toastEl = document.getElementById("toast");
+
+  function fmtMoney(n){
+    var isInt = Math.abs(n - Math.round(n)) < 1e-9;
+    return n.toLocaleString("en-US", isInt ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function showToast(msg, isErr){
+    toastEl.textContent = msg;
+    toastEl.className = "toast show" + (isErr ? " err" : "");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ toastEl.className = "toast"; }, 2600);
+  }
+
+  function populateCategories(){
+    catSelect.innerHTML = "";
+    CATEGORIES.forEach(function(c){
+      var opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      catSelect.appendChild(opt);
+    });
+  }
+
+  function populateItems(){
+    var cat = catSelect.value;
+    itemSelect.innerHTML = "";
+    CATALOG.filter(function(it){ return it.cat === cat; }).forEach(function(it){
+      var opt = document.createElement("option");
+      opt.value = it.id;
+      opt.textContent = it.name + " — PKR " + fmtMoney(it.price) + " / " + it.unit;
+      itemSelect.appendChild(opt);
+    });
+    updatePreview();
+  }
+
+  function currentItem(){
+    var id = parseInt(itemSelect.value, 10);
+    return CATALOG.filter(function(it){ return it.id === id; })[0];
+  }
+
+  function updatePreview(){
+    var it = currentItem();
+    if (!it){ pricePreview.textContent = ""; return; }
+    qtyUnitLabel.textContent = it.unit;
+    var qty = parseFloat(qtyInput.value) || 0;
+    pricePreview.innerHTML = "Unit price <strong>PKR " + fmtMoney(it.price) + "</strong> per " + it.unit +
+      " &nbsp;&middot;&nbsp; Line total <strong>PKR " + fmtMoney(it.price * qty) + "</strong>";
+  }
+
+  function render(){
+    quoteBody.innerHTML = "";
+    if (quote.length === 0){
+      tableWrap.style.display = "none";
+      emptyState.style.display = "block";
+    } else {
+      tableWrap.style.display = "block";
+      emptyState.style.display = "none";
+      quote.forEach(function(row, idx){
+        var tr = document.createElement("tr");
+
+        var tdName = document.createElement("td");
+        tdName.textContent = row.name;
+        tr.appendChild(tdName);
+
+        var tdCat = document.createElement("td");
+        tdCat.className = "cat-cell";
+        tdCat.textContent = row.cat;
+        tr.appendChild(tdCat);
+
+        var tdPrice = document.createElement("td");
+        tdPrice.className = "num";
+        tdPrice.textContent = fmtMoney(row.price);
+        tr.appendChild(tdPrice);
+
+        var tdQty = document.createElement("td");
+        tdQty.className = "num";
+        var qtyEl = document.createElement("input");
+        qtyEl.type = "number";
+        qtyEl.min = "0";
+        qtyEl.step = "any";
+        qtyEl.value = row.qty;
+        qtyEl.className = "item-qty";
+        qtyEl.addEventListener("input", function(){
+          var v = parseFloat(qtyEl.value);
+          row.qty = isNaN(v) || v < 0 ? 0 : v;
+          renderSummary();
+          tdTotal.textContent = fmtMoney(row.price * row.qty);
+        });
+        tdQty.appendChild(qtyEl);
+        tr.appendChild(tdQty);
+
+        var tdTotal = document.createElement("td");
+        tdTotal.className = "num";
+        tdTotal.textContent = fmtMoney(row.price * row.qty);
+        tr.appendChild(tdTotal);
+
+        var tdRemove = document.createElement("td");
+        var rmBtn = document.createElement("button");
+        rmBtn.className = "remove-btn";
+        rmBtn.setAttribute("aria-label", "Remove " + row.name);
+        rmBtn.textContent = "×";
+        rmBtn.addEventListener("click", function(){
+          quote.splice(idx, 1);
+          render();
+        });
+        tdRemove.appendChild(rmBtn);
+        tr.appendChild(tdRemove);
+
+        quoteBody.appendChild(tr);
+      });
+    }
+    renderSummary();
+  }
+
+  function renderSummary(){
+    var total = quote.reduce(function(sum, r){ return sum + r.price * (parseFloat(r.qty) || 0); }, 0);
+    statItems.textContent = quote.length.toLocaleString("en-US");
+    statTotal.textContent = fmtMoney(total);
+    exportBtn.disabled = quote.length === 0;
+  }
+
+  function addCurrentSelection(){
+    var it = currentItem();
+    if (!it) return;
+    var qty = parseFloat(qtyInput.value);
+    if (isNaN(qty) || qty <= 0){
+      showToast("Enter a quantity greater than 0.", true);
+      return;
+    }
+    var existing = quote.filter(function(r){ return r.id === it.id; })[0];
+    if (existing){
+      existing.qty += qty;
+    } else {
+      quote.push({ id: it.id, name: it.name, cat: it.cat, unit: it.unit, price: it.price, qty: qty });
+    }
+    render();
+    showToast(it.name + " added to quote.");
+  }
+
+  // ---------------------------------------------------------------------
+  // Excel export: styled workbook with category subtotals, a colour key,
+  // a data-bar column, and an embedded "spend by category" chart image.
+  // ---------------------------------------------------------------------
+
+  function roundRectPath(ctx, x, y, w, h, r){
+    if (typeof ctx.roundRect === "function"){
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+      return;
+    }
+    r = Math.min(r, h / 2, w / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function fitText(ctx, text, maxWidth){
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    var ell = "…";
+    var lo = 0, hi = text.length;
+    while (lo < hi){
+      var mid = Math.ceil((lo + hi) / 2);
+      if (ctx.measureText(text.slice(0, mid) + ell).width <= maxWidth) lo = mid; else hi = mid - 1;
+    }
+    return text.slice(0, lo) + ell;
+  }
+
+  // chartData: [{ cat, total }], sorted descending by total (categories present only)
+  function buildCategoryChartDataUrl(chartData){
+    var W = 760;
+    var barH = 30, gapH = 16;
+    var padTop = 62, padBottom = 26, padLeft = 232, padRight = 96;
+    var H = padTop + chartData.length * (barH + gapH) - gapH + padBottom;
+
+    var canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    var ctx = canvas.getContext("2d");
+
+    // Background — kept solid white/dark-ink-on-white regardless of viewer
+    // theme, since the embedded image renders on Excel's own white sheet.
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = "#0b0b0b";
+    ctx.font = "700 19px 'Barlow Condensed', Arial, sans-serif";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("Spend by Category", 22, 30);
+
+    ctx.fillStyle = "#52514e";
+    ctx.font = "400 12px 'IBM Plex Sans', Arial, sans-serif";
+    ctx.fillText("Line total (PKR) per category, current quote", 22, 48);
+
+    var maxVal = chartData.reduce(function(m, d){ return Math.max(m, d.total); }, 0) || 1;
+    var barAreaW = W - padLeft - padRight;
+
+    // baseline
+    ctx.strokeStyle = "#e1e0d9";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padLeft + 0.5, padTop - 8);
+    ctx.lineTo(padLeft + 0.5, padTop + chartData.length * (barH + gapH) - gapH + 6);
+    ctx.stroke();
+
+    chartData.forEach(function(d, i){
+      var y = padTop + i * (barH + gapH);
+      var w = Math.max(6, (d.total / maxVal) * barAreaW);
+
+      ctx.font = "500 13px 'IBM Plex Sans', Arial, sans-serif";
+      ctx.fillStyle = "#0b0b0b";
+      ctx.textAlign = "right";
+      var label = fitText(ctx, d.cat, padLeft - 14);
+      ctx.fillText(label, padLeft - 12, y + barH / 2 + 4.5);
+      ctx.textAlign = "left";
+
+      roundRectPath(ctx, padLeft, y, w, barH, 4);
+      ctx.fillStyle = "#" + (CATEGORY_COLORS[d.cat] || "5C6C82");
+      ctx.fill();
+
+      ctx.font = "500 12.5px 'IBM Plex Mono', 'Consolas', monospace";
+      ctx.fillStyle = "#52514e";
+      ctx.fillText("PKR " + fmtMoney(d.total), padLeft + w + 10, y + barH / 2 + 4.5);
+    });
+
+    return canvas.toDataURL("image/png");
+  }
+
+  async function exportExcel(){
+    if (quote.length === 0) return;
+    if (typeof ExcelJS === "undefined"){
+      showToast("Excel library failed to load — check your connection and try again.", true);
+      return;
+    }
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){ /* noop */ }
+
+    var grandTotal = quote.reduce(function(s, row){ return s + row.price * (parseFloat(row.qty) || 0); }, 0);
+
+    var byCat = {};
+    CATEGORIES.forEach(function(c){ byCat[c] = []; });
+    quote.forEach(function(row){ byCat[row.cat].push(row); });
+
+    var catTotals = {};
+    CATEGORIES.forEach(function(c){
+      catTotals[c] = byCat[c].reduce(function(s, row){ return s + row.price * (parseFloat(row.qty) || 0); }, 0);
+    });
+    var chartData = CATEGORIES
+      .filter(function(c){ return catTotals[c] > 0; })
+      .map(function(c){ return { cat: c, total: catTotals[c] }; })
+      .sort(function(a, b){ return b.total - a.total; });
+
+    var WHITE = "FFFFFFFF";
+    var INK = "FF152238";
+    var MUTED = "FF5C6C82";
+    var ACCENT_FILL = "FF155EA8";
+    var ACCENT_STRONG_FILL = "FF0D3F75";
+    var SUBTOTAL_FILL = "FFE9EAED";
+    var SUBTOTAL_BORDER = "FFB7C2D1";
+    var HAIRLINE = "FFE3E7EE";
+    var DATABAR_COLOR = "FF3987E5";
+
+    var workbook = new ExcelJS.Workbook();
+    workbook.creator = "Nayatel Quote Builder";
+    workbook.created = new Date();
+
+    var ws = workbook.addWorksheet("Quote", { properties: { defaultRowHeight: 19 } });
+
+    ws.columns = [
+      { key: "item", width: 38 },
+      { key: "cat", width: 27 },
+      { key: "unit", width: 9 },
+      { key: "price", width: 15 },
+      { key: "qty", width: 11 },
+      { key: "total", width: 19 },
+      { key: "pct", width: 13 }
+    ];
+
+    // Row 1 — title band
+    ws.mergeCells(1, 1, 1, 7);
+    var titleCell = ws.getCell(1, 1);
+    titleCell.value = "Nayatel Equipment Quote";
+    titleCell.font = { name: "Calibri", size: 18, bold: true, color: { argb: WHITE } };
+    titleCell.alignment = { vertical: "middle", horizontal: "left", indent: 1 };
+    titleCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: ACCENT_STRONG_FILL } };
+    ws.getRow(1).height = 30;
+
+    // Row 2 — subtitle band
+    ws.mergeCells(2, 1, 2, 7);
+    var subCell = ws.getCell(2, 1);
+    var todayStr = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    subCell.value = "Generated " + todayStr + "   ·   Tariff dated 28 Apr 2026   ·   Prices in PKR, inclusive of 18% GST";
+    subCell.font = { name: "Calibri", size: 10, italic: true, color: { argb: MUTED } };
+    subCell.alignment = { vertical: "middle", horizontal: "left", indent: 1 };
+    subCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFEAEFF5" } };
+    ws.getRow(2).height = 18;
+
+    // Row 3 — column header
+    var HEADER_ROW = 3;
+    var headers = ["Item", "Category", "Unit", "Unit Price (PKR)", "Quantity", "Line Total (PKR)", "% of Total"];
+    headers.forEach(function(h, i){
+      var c = ws.getCell(HEADER_ROW, i + 1);
+      c.value = h;
+      c.font = { name: "Calibri", size: 10.5, bold: true, color: { argb: WHITE } };
+      c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: ACCENT_FILL } };
+      c.alignment = { vertical: "middle", horizontal: i < 2 ? "left" : "right", indent: i < 2 ? 1 : 0 };
+    });
+    ws.getRow(HEADER_ROW).height = 20;
+
+    var r = HEADER_ROW + 1;
+    var firstDataRow = r;
+
+    CATEGORIES.forEach(function(cat){
+      var items = byCat[cat];
+      if (!items.length) return;
+      var swatchArgb = "FF" + CATEGORY_COLORS[cat];
+
+      items.forEach(function(row){
+        var lineTotal = row.price * (parseFloat(row.qty) || 0);
+        var pct = grandTotal > 0 ? lineTotal / grandTotal : 0;
+
+        var cItem = ws.getCell(r, 1);
+        cItem.value = row.name;
+        cItem.font = { name: "Calibri", size: 10.5, color: { argb: INK } };
+        cItem.alignment = { vertical: "middle", horizontal: "left", indent: 1 };
+
+        var cCat = ws.getCell(r, 2);
+        cCat.value = { richText: [
+          { font: { name: "Calibri", size: 11, color: { argb: swatchArgb } }, text: "■ " },
+          { font: { name: "Calibri", size: 10.5, color: { argb: MUTED } }, text: cat }
+        ] };
+        cCat.alignment = { vertical: "middle", horizontal: "left" };
+
+        var cUnit = ws.getCell(r, 3);
+        cUnit.value = row.unit;
+        cUnit.font = { name: "Calibri", size: 10.5, color: { argb: MUTED } };
+        cUnit.alignment = { vertical: "middle", horizontal: "center" };
+
+        var cPrice = ws.getCell(r, 4);
+        cPrice.value = row.price;
+        cPrice.numFmt = '#,##0.00';
+        cPrice.font = { name: "Consolas", size: 10.5, color: { argb: INK } };
+        cPrice.alignment = { vertical: "middle", horizontal: "right" };
+
+        var cQty = ws.getCell(r, 5);
+        cQty.value = row.qty;
+        cQty.numFmt = '#,##0.##';
+        cQty.font = { name: "Consolas", size: 10.5, color: { argb: INK } };
+        cQty.alignment = { vertical: "middle", horizontal: "right" };
+
+        var cTotal = ws.getCell(r, 6);
+        cTotal.value = lineTotal;
+        cTotal.numFmt = '#,##0.00';
+        cTotal.font = { name: "Consolas", size: 10.5, bold: true, color: { argb: INK } };
+        cTotal.alignment = { vertical: "middle", horizontal: "right" };
+
+        var cPct = ws.getCell(r, 7);
+        cPct.value = pct;
+        cPct.numFmt = '0.0%';
+        cPct.font = { name: "Consolas", size: 9.5, color: { argb: MUTED } };
+        cPct.alignment = { vertical: "middle", horizontal: "right" };
+
+        for (var col = 1; col <= 7; col++){
+          ws.getCell(r, col).border = { bottom: { style: "hair", color: { argb: HAIRLINE } } };
+        }
+        r++;
+      });
+
+      // category subtotal row
+      var subtotal = items.reduce(function(s, row){ return s + row.price * (parseFloat(row.qty) || 0); }, 0);
+      var subPct = grandTotal > 0 ? subtotal / grandTotal : 0;
+
+      ws.mergeCells(r, 1, r, 3);
+      var subLabel = ws.getCell(r, 1);
+      subLabel.value = { richText: [
+        { font: { name: "Calibri", size: 10.5, bold: true, color: { argb: swatchArgb } }, text: "■ " },
+        { font: { name: "Calibri", size: 10.5, bold: true, color: { argb: INK } }, text: cat + " subtotal" }
+      ] };
+      subLabel.alignment = { vertical: "middle", horizontal: "left", indent: 1 };
+
+      var subTotalCell = ws.getCell(r, 6);
+      subTotalCell.value = subtotal;
+      subTotalCell.numFmt = '#,##0.00';
+      subTotalCell.font = { name: "Consolas", size: 10.5, bold: true, color: { argb: INK } };
+      subTotalCell.alignment = { vertical: "middle", horizontal: "right" };
+
+      var subPctCell = ws.getCell(r, 7);
+      subPctCell.value = subPct;
+      subPctCell.numFmt = '0.0%';
+      subPctCell.font = { name: "Consolas", size: 9.5, bold: true, color: { argb: MUTED } };
+      subPctCell.alignment = { vertical: "middle", horizontal: "right" };
+
+      for (var col2 = 1; col2 <= 7; col2++){
+        var scell = ws.getCell(r, col2);
+        scell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: SUBTOTAL_FILL } };
+        scell.border = { top: { style: "thin", color: { argb: SUBTOTAL_BORDER } } };
+      }
+      r++;
+    });
+
+    var lastDataRow = r - 1;
+    r++; // blank spacer row
+
+    // grand total row
+    var grandRow = r;
+    ws.mergeCells(grandRow, 1, grandRow, 5);
+    var gLabel = ws.getCell(grandRow, 1);
+    gLabel.value = "GRAND TOTAL";
+    gLabel.font = { name: "Calibri", size: 13, bold: true, color: { argb: WHITE } };
+    gLabel.alignment = { vertical: "middle", horizontal: "right", indent: 1 };
+
+    var gTotalCell = ws.getCell(grandRow, 6);
+    gTotalCell.value = grandTotal;
+    gTotalCell.numFmt = '#,##0.00';
+    gTotalCell.font = { name: "Consolas", size: 12.5, bold: true, color: { argb: WHITE } };
+    gTotalCell.alignment = { vertical: "middle", horizontal: "right" };
+
+    var gPctCell = ws.getCell(grandRow, 7);
+    gPctCell.value = 1;
+    gPctCell.numFmt = '0%';
+    gPctCell.font = { name: "Consolas", size: 11, bold: true, color: { argb: WHITE } };
+    gPctCell.alignment = { vertical: "middle", horizontal: "right" };
+
+    for (var col3 = 1; col3 <= 7; col3++){
+      ws.getCell(grandRow, col3).fill = { type: "pattern", pattern: "solid", fgColor: { argb: ACCENT_STRONG_FILL } };
+    }
+    ws.getRow(grandRow).height = 24;
+
+    // Data-bar conditional formatting on the % of Total column — a genuine
+    // in-Excel graphical element (item rows + category subtotal rows).
+    ws.addConditionalFormatting({
+      ref: "G" + firstDataRow + ":G" + lastDataRow,
+      rules: [{
+        type: "dataBar",
+        cfvo: [{ type: "num", value: 0 }, { type: "num", value: 1 }],
+        color: { argb: DATABAR_COLOR },
+        minLength: 0,
+        maxLength: 100,
+        showValue: true,
+        gradient: false,
+        border: false,
+        priority: 1
+      }]
+    });
+
+    ws.views = [{ state: "frozen", ySplit: HEADER_ROW, showGridLines: false }];
+
+    // Embedded chart image — rendered client-side on canvas, placed beside the table.
+    if (chartData.length){
+      var chartUrl = buildCategoryChartDataUrl(chartData);
+      var chartH = 62 + chartData.length * 46 - 16 + 26;
+      var imgId = workbook.addImage({ base64: chartUrl, extension: "png" });
+      ws.addImage(imgId, {
+        tl: { col: 8, row: 1 },
+        ext: { width: 480, height: Math.round(480 * (chartH / 760)) }
+      });
+    }
+
+    var buffer = await workbook.xlsx.writeBuffer();
+    var blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+    var stamp = new Date().toISOString().slice(0, 10);
+    var filename = "nayatel-equipment-quote-" + stamp + ".xlsx";
+
+    var downloads = null;
+    try { downloads = await window.claude.use("downloads"); } catch(e) { downloads = null; }
+
+    if (!downloads){
+      var url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      showToast("Downloads capability unavailable — opened the Excel file in a new tab instead.", true);
+      return;
+    }
+
+    try{
+      var result = await downloads.save({ filename: filename, data: blob });
+      showToast(result.status === "saved" ? "Excel quote saved: " + filename : "Excel quote delivered.");
+    } catch(err){
+      if (err && err.code === "declined"){
+        showToast("Download cancelled.", true);
+      } else {
+        showToast("Couldn't save the Excel file (" + (err && err.code || "unknown error") + ").", true);
+      }
+    }
+  }
+
+  catSelect.addEventListener("change", populateItems);
+  itemSelect.addEventListener("change", updatePreview);
+  qtyInput.addEventListener("input", updatePreview);
+  addBtn.addEventListener("click", addCurrentSelection);
+  clearBtn.addEventListener("click", function(){
+    if (quote.length === 0) return;
+    quote = [];
+    render();
+    showToast("Quote cleared.");
+  });
+  exportBtn.addEventListener("click", exportExcel);
+
+  populateCategories();
+  populateItems();
+  render();
+})();
+</script>
